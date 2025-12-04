@@ -1,0 +1,122 @@
+/* =====================       BACKGROUND COLOR      =======================*/
+
+body{
+    background-color: rgb(56, 55, 55);
+}
+
+/*=============================             ==================================*/
+/******************************             ***********************************/
+
+
+
+/*==================================================================*/
+/* **********************    ALL BUTTONS    *************************/
+/*==================================================================*/
+button.info-button{
+padding-top: 20px;
+padding-bottom: 20px;
+padding-left: 60px;
+padding-right: 60px;
+border-radius: 10px;
+color: rgb(0, 0, 0);
+font-size: 20px;
+border: none;
+background-color: rgb(255, 0, 0);
+transition: 0.5s;
+margin-bottom: 2px;
+margin-top: 5px;
+}
+button.info-button:hover{
+    cursor: pointer;
+    transition: 0.5s;
+    background-color: rgb(0, 17, 32);
+    border: 1px solid rgb(255, 0, 0);
+    margin-bottom: 0px;
+}
+
+button.Restart-button,
+button.Pause-button,
+button.Start-button{
+padding-top: 20px;
+padding-bottom: 20px;
+padding-left: 60px;
+padding-right: 60px;
+border-radius: 10px;
+color: rgb(255, 255, 0);
+border: none;
+background-color: rgb(0, 0, 0);
+transition: 0.5s;
+margin-bottom: 5px;
+margin-left: 10px;
+font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+font-size: 20px;
+}
+/*           HOVERING PROPERTIES              */
+button.Pause-button:hover,
+button.Restart-button:hover,
+button.Start-button:hover{
+    cursor: pointer;
+    transition: 0.9s;
+    background-color: rgb(0, 17, 32);
+    border: 1px solid white;
+    margin-bottom: 0px;
+}
+
+/*****************************            ***********************************/
+/*============================            ==================================*/
+/*****************************            ***********************************/
+
+
+
+canvas{
+    border-radius: 10px;
+    opacity: 99%;
+    margin-top: 2px;
+    cursor: pointer;
+    border: none;
+    background-image: url(GAME/Textures/R\ \(1\).jpg);
+    
+}
+
+/**********************     PARAGRAPHS      ***********************/
+/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
+
+div.titleMain{
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+p.title{
+    font-size: 100px;
+    color: rgb(255, 255, 255);
+    margin-top: 40px;
+    margin-bottom: 60px;
+    font-weight: bold;
+    font-family: fantasy, serif;
+}
+
+
+p.hight-Score{
+    font-size: 30px;
+    color: rgb(255, 255, 255);
+    margin-top: 0px;
+    margin-bottom: 0px;
+    opacity: 80%;
+}
+
+div.title{
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+#gameOverImage {
+    display: none;
+    position: absolute;
+    top: 35%;
+    left: 43%;
+    z-index: 1;
+    opacity: 90%;
+    width: 300px;
+    height: 200px;
+}
+
+
