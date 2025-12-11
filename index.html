@@ -10,29 +10,54 @@
 <body>
     <img id="underlayingImage" src="GAME/Textures/Flappy-Bird-Transparent-Background.png" alt="Background">
     
-    <div class="titleMain">
-        <p class="title">FLAPPY BIRD 🕊</p>
-    </div>
-    
-    <div class="canvas">
-        <div class="canvas-wrapper">
-            <canvas id="mycanvas"></canvas>
-            <img id="gameOverImage" src="GAME/Textures/Game-Over-Background.png" alt="Game Over">
+    <div class="main-container">
+        <!-- Particle Container for Effects -->
+        <div id="particles"></div>
+        
+        <div class="titleMain">
+            <p class="title">FLAPPY BIRD 🕊</p>
+            <p class="subtitle">Press Space or Click to Flap!</p>
         </div>
         
-        <div class="button-container">
-            <button class="info-button">🦆</button>
-            <button class="Start-button">Start/Resume</button>
-            <button class="Pause-button" id="pauseButton" onclick="togglePause()">Pause</button>
-            <button class="Restart-button">Restart</button>
+        <div class="canvas">
+            <div class="canvas-wrapper">
+                <canvas id="mycanvas"></canvas>
+                <img id="gameOverImage" src="GAME/Textures/Game-Over-Background.png" alt="Game Over">
+                
+                <!-- Score Display on Canvas -->
+                <div class="score-display" id="currentScore">0</div>
+            </div>
+            
+            <div class="button-container">
+                <button class="info-button" title="Game Info">🦆 Info</button>
+                <button class="Start-button">▶ Start</button>
+                <button class="Pause-button" id="pauseButton">⏸ Pause</button>
+                <button class="Restart-button">🔄 Restart</button>
+            </div>
+            
+            <div class="stats-container">
+                <p class="hight-Score" id="highScore">🏆 High Score: 0</p>
+                <p class="current-speed" id="speedDisplay">⚡ Speed: 1.0x</p>
+            </div>
         </div>
-        
-        <p class="hight-Score" id="highScore">High Score: 0</p>
     </div>
 
-    <audio id="flapSound" src="GAME/Sounds/flap.mp3"></audio>
-    <audio id="collisionSound" src="GAME/Sounds/flappy-bird-hit-sound.mp3"></audio>
-    <audio id="scoreSound" src="GAME/Sounds/level-pass.mp3"></audio>
+    <!-- Info Modal -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>How to Play 🎮</h2>
+            <p>🕊 <strong>Flap:</strong> Press SPACE, UP ARROW, or CLICK the canvas</p>
+            <p>⬅️ <strong>Move Left:</strong> LEFT ARROW</p>
+            <p>➡️ <strong>Move Right:</strong> RIGHT ARROW</p>
+            <p>🎯 <strong>Goal:</strong> Avoid the pillars and survive as long as possible!</p>
+            <p>⚡ <strong>Difficulty:</strong> Game speeds up every 10 seconds</p>
+        </div>
+    </div>
+
+    <audio id="flapSound" src="GAME/Sounds/flap.mp3" preload="auto"></audio>
+    <audio id="collisionSound" src="GAME/Sounds/flappy-bird-hit-sound.mp3" preload="auto"></audio>
+    <audio id="scoreSound" src="GAME/Sounds/level-pass.mp3" preload="auto"></audio>
 
     <script src="main.js" type="module"></script>
 </body>
