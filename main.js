@@ -36,12 +36,87 @@ let pillarPosition = 1;
 let openingPosition = Math.random() * 1.6 - 0.9;
 const openingHeight = 0.5;
 
-// High score
+// High score and current score
 let highScore = 0;
-document.getElementById("highScore").innerText = "High Score: " + highScore;
+let currentScore = 0;
+document.getElementById("highScore").innerText = "🏆 High Score: " + highScore;
+document.getElementById("currentScore").innerText = currentScore;
+
+// Speed display
+let speedMultiplier = 1.0;
+document.getElementById("speedDisplay").innerText = "⚡ Speed: " + speedMultiplier.toFixed(1) + "x";
 
 // Flag to track whether the game is paused
 let isPaused = false;
+
+// Flag to track if sound has been initialized
+let soundInitialized = false;
+
+// ========== SOUND INITIALIZATION ==========
+function initializeSounds() {
+    if (!soundInitialized) {
+        // Play and pause each sound to initialize
+        const sounds = [
+            document.getElementById("flapSound"),
+            document.getElementById("collisionSound"),
+            document.getElementById("scoreSound")
+        ];
+        
+        sounds.forEach(sound => {
+            sound.volume = 0.3;
+            sound.play().then(() => {
+                sound.pause();
+                sound.currentTime = 0;
+            }).catch(err => console.log("Sound init:", err));
+        });
+        
+        soundInitialized = true;
+    }
+}
+
+// ========== ENHANCED SOUND FUNCTIONS ==========
+function playFlapSound() {
+    const flapSound = document.getElementById("flapSound");
+    flapSound.currentTime = 0;
+    flapSound.volume = 0.3;
+    flapSound.play().catch(err => console.log("Flap sound error:", err));
+}
+
+function playCollisionSound() {
+    const collisionSound = document.getElementById("collisionSound");
+    collisionSound.currentTime = 0;
+    collisionSound.volume = 0.5;
+    collisionSound.play().catch(err => console.log("Collision sound error:", err));
+}
+
+function playScoreSound() {
+    const scoreSound = document.getElementById("scoreSound");
+    scoreSound.currentTime = 0;
+    scoreSound.volume = 0.4;
+    scoreSound.play().catch(err => console.log("Score sound error:", err));
+}
+
+// ========== CANVAS CLICK TO FLAP ==========
+canvas.addEventListener('click', (e) => {
+    if (!isPaused) {
+        birdVelocity[1] = 0.01;
+        playFlapSound();
+    }
+    e.preventDefault(); // Prevent any default behavior
+});
+
+// Prevent touch gestures from scrolling
+canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    if (!isPaused) {
+        birdVelocity[1] = 0.01;
+        playFlapSound();
+    }
+}, { passive: false });
+
+canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+}, { passive: false });
 
 // Event listeners for key down and key up events
 window.addEventListener('keydown', handleKeyDown);
@@ -67,6 +142,7 @@ function checkCollision() {
             (birdY > pillarTopY && birdY > pillarBottomY)
         ) {
             // Collision detected, end the game
+            playCollisionSound();
             endGame();
         }
     }
@@ -85,6 +161,7 @@ function update() {
     birdPosition[1] += birdVelocity[1];
 
     if (birdPosition[1] >= 1 || birdPosition[1] <= -1) {
+        playCollisionSound();
         endGame();
         return;
     }
@@ -93,8 +170,16 @@ function update() {
     if (pillarPosition < -1) {
         pillarPosition = 1;
         openingPosition = Math.random() * 1.6 - 0.8;
-        highScore++;
-        document.getElementById("highScore").innerText = "High Score: " + highScore;
+        currentScore++;
+        document.getElementById("currentScore").innerText = currentScore;
+        
+        // Update high score
+        if (currentScore > highScore) {
+            highScore = currentScore;
+            document.getElementById("highScore").innerText = "🏆 High Score: " + highScore;
+        }
+        
+        playScoreSound();
     }
 
     // Check for collision between the bird and the pillars
@@ -157,6 +242,7 @@ function createProgram(vsSource, fsSource) {
 
 // Start game function
 function startGame() {
+    initializeSounds(); // Initialize sounds on first user interaction
     isPaused = false;
     update();
 }
@@ -168,12 +254,15 @@ function pauseGame() {
 
 // Restart game function
 function restartGame() {
+    initializeSounds(); // Initialize sounds if not already done
     isPaused = false;
-    highScore = 0;
-    document.getElementById("highScore").innerText = "High Score: " + highScore;
+    currentScore = 0;
+    document.getElementById("currentScore").innerText = currentScore;
     birdPosition = [0, 0.5];
     birdVelocity = [0, 0];
     pillarSpeed = 0.01;
+    speedMultiplier = 1.0;
+    document.getElementById("speedDisplay").innerText = "⚡ Speed: " + speedMultiplier.toFixed(1) + "x";
     pillarPosition = 1;
     openingPosition = Math.random() * 1.6 - 0.9;
 
@@ -196,18 +285,28 @@ document.querySelector('.Restart-button').addEventListener('click', restartGame)
 
 // Function to handle key down events
 function handleKeyDown(event) {
+    initializeSounds(); // Initialize on first key press
+    
     switch (event.key) {
         case "ArrowUp":
-            birdVelocity[1] = 0.01;
+        case " ": // Spacebar
+            if (!isPaused) {
+                birdVelocity[1] = 0.01;
+                playFlapSound();
+            }
+            event.preventDefault(); // Prevent page scroll
             break;
         case "ArrowLeft":
             birdVelocity[0] = -0.01;
+            event.preventDefault(); // Prevent page scroll
             break;
         case "ArrowRight":
             birdVelocity[0] = 0.01;
+            event.preventDefault(); // Prevent page scroll
             break;
         case "ArrowDown":
             birdVelocity[1] -= 0.01;
+            event.preventDefault(); // Prevent page scroll
             break;
     }
 }
@@ -272,6 +371,8 @@ function renderPillars(program, topVertices, bottomVertices) {
 // Increase pillar speed every 10 seconds
 setInterval(() => {
     pillarSpeed += 0.001;
+    speedMultiplier = pillarSpeed / 0.01;
+    document.getElementById("speedDisplay").innerText = "⚡ Speed: " + speedMultiplier.toFixed(1) + "x";
 }, 10000);
 
 // Function to end the game
@@ -280,20 +381,22 @@ function endGame() {
     const gameOverImage = document.getElementById("gameOverImage");
     gameOverImage.style.display = "block";
 }
-// Function to play flap sound
-function playFlapSound() {
-    const flapSound = document.getElementById("flapSound");
-    flapSound.play();
-}
 
-// Function to play collision sound
-function playCollisionSound() {
-    const collisionSound = document.getElementById("collisionSound");
-    collisionSound.play();
-}
+// ========== INFO MODAL ==========
+const modal = document.getElementById("infoModal");
+const infoBtn = document.querySelector(".info-button");
+const closeBtn = document.querySelector(".close");
 
-// Function to play score sound
-function playScoreSound() {
-    const scoreSound = document.getElementById("scoreSound");
-    scoreSound.play();
-}
+infoBtn.addEventListener("click", () => {
+    modal.style.display = "block";
+});
+
+closeBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+});
+
+window.addEventListener("click", (event) => {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+});
