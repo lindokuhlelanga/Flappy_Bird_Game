@@ -5,9 +5,30 @@
     box-sizing: border-box;
 }
 
+html {
+    overflow: hidden;
+    height: 100vh;
+}
+
 body {
-    background-color: rgb(56, 55, 55);
+    background-color: #2a2a2a;
+    overflow: hidden;
+    height: 100vh;
+    position: fixed;
+    width: 100%;
+}
+
+/* Main container to allow internal scrolling if needed */
+.main-container {
+    height: 100vh;
+    overflow-y: auto;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+.main-container::-webkit-scrollbar {
+    width: 0;
+    display: none;
 }
 
 /* ===================== BACKGROUND IMAGE ===================== */
@@ -15,24 +36,84 @@ body {
     position: fixed;
     top: 0;
     left: 0;
+    width: 95%;
+    height: 97%;
+    z-index: -1;
+    object-fit: cover;
+    opacity: 0.9;
+}
+
+/* ===================== PARTICLES ===================== */
+#particles {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     z-index: -1;
-    object-fit: cover;
+    pointer-events: none;
 }
 
 /* ===================== TITLE SECTION ===================== */
 .titleMain {
     text-align: center;
-    padding: 20px 10px;
+    padding: 10px 10px;
+    animation: fadeInDown 1s ease-out;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .title {
-    font-size: clamp(40px, 8vw, 100px);
-    color: rgb(255, 255, 255);
+    font-size: clamp(30px, 6vw, 80px);
+    color: #fff;
     font-weight: bold;
     font-family: fantasy, serif;
-    margin: 20px 0;
+    margin: 10px 0 5px 0;
+    text-shadow: 0 0 20px rgba(255, 255, 0, 0.5),
+                 0 0 40px rgba(255, 255, 0, 0.3),
+                 4px 4px 8px rgba(0, 0, 0, 0.8);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 20px rgba(255, 255, 0, 0.5),
+                     0 0 40px rgba(255, 255, 0, 0.3),
+                     4px 4px 8px rgba(0, 0, 0, 0.8);
+    }
+    to {
+        text-shadow: 0 0 30px rgba(255, 255, 0, 0.8),
+                     0 0 60px rgba(255, 255, 0, 0.5),
+                     4px 4px 8px rgba(0, 0, 0, 0.8);
+    }
+}
+
+.subtitle {
+    font-size: clamp(14px, 2.5vw, 20px);
+    color: #4f4303;
+    font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+    margin-top: 0;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
 }
 
 /* ===================== CANVAS CONTAINER ===================== */
@@ -40,8 +121,20 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0 20px;
+    padding: 0 15px;
     position: relative;
+    animation: fadeIn 1.2s ease-out;
+    max-height: calc(100vh - 180px);
+    overflow: visible;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .canvas-wrapper {
@@ -49,6 +142,16 @@ body {
     width: 100%;
     max-width: 750px;
     aspect-ratio: 750 / 442;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(255, 255, 0, 0.2);
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.canvas-wrapper:hover {
+    transform: none;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(255, 255, 0, 0.2);
 }
 
 #mycanvas {
@@ -57,13 +160,45 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    border-radius: 10px;
-    opacity: 99%;
+    border-radius: 15px;
     cursor: pointer;
-    border: 2px solid black;
+    border: 3px solid rgba(255, 255, 255, 0.3);
     background-image: url(GAME/Textures/R\ \(1\).jpg);
     background-size: cover;
     background-position: center;
+    transition: border-color 0.3s ease;
+}
+
+#mycanvas:hover {
+    border-color: rgba(255, 255, 0, 0.6);
+}
+
+/* ===================== SCORE DISPLAY ===================== */
+.score-display {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(40px, 6vw, 80px);
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.8),
+                 0 0 20px rgba(255, 255, 0, 0.5);
+    font-family: fantasy, serif;
+    pointer-events: none;
+    z-index: 10;
+    animation: scoreAppear 0.3s ease-out;
+}
+
+@keyframes scoreAppear {
+    from {
+        transform: translateX(-50%) scale(0.5);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+    }
 }
 
 /* ===================== GAME OVER IMAGE ===================== */
@@ -74,98 +209,305 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1000;
-    opacity: 90%;
     width: min(300px, 80%);
     height: auto;
     pointer-events: none;
+    animation: gameOverAppear 0.5s ease-out;
+}
+
+@keyframes gameOverAppear {
+    from {
+        transform: translate(-50%, -50%) scale(0.5) rotate(-10deg);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        opacity: 0.95;
+    }
 }
 
 /* ===================== BUTTONS CONTAINER ===================== */
 .button-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 10px;
     padding: 0 10px;
 }
 
 /* ===================== ALL BUTTONS ===================== */
 button {
-    padding: 15px 30px;
-    border-radius: 10px;
-    border: none;
-    font-size: clamp(14px, 2vw, 20px);
-    transition: 0.5s;
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    font-size: clamp(12px, 1.8vw, 16px);
+    font-weight: 600;
+    transition: all 0.3s ease;
     cursor: pointer;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    touch-action: manipulation;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+button:active::before {
+    width: 300px;
+    height: 300px;
 }
 
 /* Info Button */
 .info-button {
-    background-color: rgb(255, 0, 0);
-    color: rgb(0, 0, 0);
+    background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+    color: white;
     font-size: clamp(16px, 2.5vw, 20px);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .info-button:hover {
-    background-color: rgb(0, 17, 32);
-    border: 1px solid rgb(255, 0, 0);
+    background: linear-gradient(135deg, #cc0000 0%, #990000 100%);
+    border-color: #ffff00;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 0, 0, 0.5);
 }
 
 /* Game Control Buttons */
 .Start-button,
 .Pause-button,
 .Restart-button {
-    background-color: rgb(0, 0, 0);
-    color: rgb(255, 255, 0);
+    background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+    color: #ffff00;
+    text-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
 }
 
 .Start-button:hover,
 .Pause-button:hover,
 .Restart-button:hover {
-    background-color: rgb(0, 17, 32);
-    border: 1px solid white;
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    border-color: #ffff00;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 255, 0, 0.4);
 }
 
-/* ===================== HIGH SCORE ===================== */
-.hight-Score {
-    font-size: clamp(20px, 3vw, 30px);
-    color: rgb(255, 255, 255);
-    margin-top: 15px;
-    opacity: 80%;
+.Start-button:active,
+.Pause-button:active,
+.Restart-button:active,
+.info-button:active {
+    transform: translateY(0);
+}
+
+/* ===================== STATS CONTAINER ===================== */
+.stats-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.hight-Score,
+.current-speed {
+    font-size: clamp(14px, 2vw, 20px);
+    color: #fff;
+    font-weight: 600;
     text-align: center;
+    padding: 8px 15px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    transition: transform 0.3s ease;
+}
+
+.hight-Score:hover,
+.current-speed:hover {
+    transform: scale(1.05);
+}
+
+/* ===================== MODAL ===================== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    margin: 10% auto;
+    padding: 30px;
+    border: 3px solid #ffd700;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.7);
+    animation: slideDown 0.4s ease-out;
+    color: white;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-content h2 {
+    text-align: center;
+    font-size: clamp(24px, 4vw, 32px);
+    margin-bottom: 20px;
+    color: #ffd700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.modal-content p {
+    font-size: clamp(14px, 2vw, 18px);
+    line-height: 1.8;
+    margin: 10px 0;
+}
+
+.close {
+    color: #ffd700;
+    float: right;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: #ff0000;
 }
 
 /* ===================== MOBILE RESPONSIVE ===================== */
 @media (max-width: 768px) {
     .title {
-        margin: 10px 0;
+        margin: 5px 0 5px 0;
+        font-size: clamp(24px, 5vw, 60px);
+    }
+
+    .subtitle {
+        font-size: clamp(12px, 2vw, 16px);
     }
 
     .canvas {
         padding: 0 10px;
+        max-height: calc(100vh - 150px);
     }
 
     button {
-        padding: 12px 20px;
-        min-width: 120px;
+        padding: 10px 15px;
+        min-width: 100px;
     }
 
     .button-container {
-        gap: 8px;
+        gap: 6px;
+        margin-top: 8px;
+    }
+
+    .stats-container {
+        gap: 10px;
+        margin-top: 8px;
+    }
+
+    .modal-content {
+        margin: 20% auto;
+        padding: 20px;
+    }
+
+    .score-display {
+        font-size: clamp(30px, 5vw, 60px);
+        top: 10px;
     }
 }
 
 @media (max-width: 480px) {
+    .title {
+        font-size: clamp(20px, 5vw, 50px);
+    }
+
     .button-container {
         flex-direction: column;
         width: 100%;
-        max-width: 300px;
-        margin: 15px auto;
+        max-width: 250px;
+        margin: 8px auto;
     }
 
     button {
         width: 100%;
+        padding: 8px 15px;
+    }
+
+    .stats-container {
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 8px;
+    }
+
+    .canvas {
+        max-height: calc(100vh - 130px);
+    }
+}
+
+@media (max-height: 700px) {
+    .titleMain {
+        padding: 5px 10px;
+    }
+
+    .title {
+        font-size: clamp(20px, 4vw, 50px);
+        margin: 5px 0 2px 0;
+    }
+
+    .subtitle {
+        font-size: clamp(10px, 1.5vw, 14px);
+    }
+
+    .canvas {
+        max-height: calc(100vh - 120px);
+    }
+
+    .button-container {
+        margin-top: 5px;
+    }
+
+    .stats-container {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    button {
+        padding: 8px 15px;
+    }
+
+    .hight-Score,
+    .current-speed {
+        font-size: clamp(12px, 1.5vw, 16px);
+        padding: 6px 12px;
     }
 }
