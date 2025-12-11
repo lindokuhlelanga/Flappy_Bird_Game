@@ -4,6 +4,23 @@ if (!webgl) {
     throw new Error("WebGL not available/supported!");
 }
 
+// ========== ADDED: Resize canvas function ==========
+function resizeCanvas() {
+    const wrapper = canvas.parentElement;
+    const rect = wrapper.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    
+    // Set WebGL viewport to match new canvas size
+    webgl.viewport(0, 0, canvas.width, canvas.height);
+}
+
+// Call on load and resize
+window.addEventListener('resize', resizeCanvas);
+window.addEventListener('load', resizeCanvas);
+resizeCanvas(); // Initial call
+// ===================================================
+
 let image = new Image();
 webgl.clearColor(0, 0, 0, 0);
 
@@ -280,6 +297,3 @@ function playScoreSound() {
     const scoreSound = document.getElementById("scoreSound");
     scoreSound.play();
 }
-
-
-  
